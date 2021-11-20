@@ -1,17 +1,54 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import useTimer  from './useTimer';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+type myTimerState = {
+  expiry: Date,
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+function MyTimer(props: myTimerState) {
+  const {
+    seconds,
+    minutes,
+    hours,
+    days,
+    isRunning,
+    start,
+    pause,
+    resume,
+    restart,
+  } = useTimer(props.expiry, () => console.warn('onExpire called'));
+
+  console.log(minutes);
+
+  return (
+    <div style={{textAlign: 'center'}}>
+      <h1>react-timer-hook </h1>
+      <p>Timer Demo</p>
+      <div style={{fontSize: '100px'}}>
+        <span>{days}</span>:<span>{hours}</span>:<span>{minutes}</span>:<span>{seconds}</span>
+      </div>
+      <p>{isRunning ? 'Running' : 'Not running'}</p>
+      <button onClick={start}>Start</button>
+      <button onClick={pause}>Pause</button>
+      <button onClick={resume}>Resume</button>
+      <button onClick={() => {
+        // Restarts to 5 minutes timer
+        const time = new Date();
+        time.setSeconds(time.getSeconds() + 300);
+        restart(time)
+      }}>Restart</button>
+    </div>
+  );
+}
+
+export default function App() {
+  const time = new Date();
+  time.setSeconds(time.getSeconds() + 600); // 10 minutes timer
+  return (
+    <div>
+      <MyTimer expiry={time} />
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById('root'))
