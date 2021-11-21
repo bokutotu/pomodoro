@@ -1,6 +1,40 @@
 import ReactDOM from 'react-dom';
 import useTimer  from './useTimer';
 
+type timerProps = {
+  isRunning: boolean
+  seconds: number;
+  minutes: number;
+  hours: number;
+  start: () => void;
+  pause: () => void;
+  resume: () => void;
+  restart: (newExpiryTimestamp: Date) => void;
+}
+
+const ShowTimer = (props: timerProps) => {
+
+  return (
+    <div style={{textAlign: 'center'}}>
+      <h1>react-timer-hook </h1>
+      <p>Timer Demo</p>
+      <div style={{fontSize: '100px'}}>
+        <span>{ props.hours }</span>:<span>{ props.minutes }</span>:<span>{ props.seconds }</span>
+      </div>
+      <p>{props.isRunning ? 'Running' : 'Not running'}</p>
+      <button onClick={props.start}>Start</button>
+      <button onClick={props.pause}>Pause</button>
+      <button onClick={props.resume}>Resume</button>
+      <button onClick={() => {
+        // Restarts to 5 minutes timer
+        const time = new Date();
+        time.setSeconds(time.getSeconds() + 300);
+        props.restart(time)
+      }}>Restart</button>
+    </div>
+  );
+}
+
 type myTimerState = {
   expiry: Date,
 }
@@ -18,26 +52,10 @@ function MyTimer(props: myTimerState) {
     restart,
   } = useTimer(props.expiry, () => console.warn('onExpire called'));
 
-  console.log(minutes);
-
   return (
-    <div style={{textAlign: 'center'}}>
-      <h1>react-timer-hook </h1>
-      <p>Timer Demo</p>
-      <div style={{fontSize: '100px'}}>
-        <span>{days}</span>:<span>{hours}</span>:<span>{minutes}</span>:<span>{seconds}</span>
-      </div>
-      <p>{isRunning ? 'Running' : 'Not running'}</p>
-      <button onClick={start}>Start</button>
-      <button onClick={pause}>Pause</button>
-      <button onClick={resume}>Resume</button>
-      <button onClick={() => {
-        // Restarts to 5 minutes timer
-        const time = new Date();
-        time.setSeconds(time.getSeconds() + 300);
-        restart(time)
-      }}>Restart</button>
-    </div>
+    <ShowTimer isRunning={isRunning} hours={hours} minutes={minutes}
+      seconds={seconds} start={start} pause={pause} resume={resume}
+      restart={restart} />
   );
 }
 
