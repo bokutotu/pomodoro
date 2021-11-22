@@ -1,5 +1,7 @@
 import ReactDOM from 'react-dom';
 import useTimer  from './useTimer';
+import SetTimerBottons from './SetRuntime';
+import './index.css';
 
 type timerProps = {
   isRunning: boolean
@@ -35,11 +37,10 @@ const ShowTimer = (props: timerProps) => {
   );
 }
 
-type myTimerState = {
-  expiry: Date,
-}
+const  MyTimer = () => {
+  const time = new Date();
+  time.setSeconds(time.getSeconds() + 0); // 10 minutes timer
 
-function MyTimer(props: myTimerState) {
   const {
     seconds,
     minutes,
@@ -50,21 +51,26 @@ function MyTimer(props: myTimerState) {
     pause,
     resume,
     restart,
-  } = useTimer(props.expiry, () => console.warn('onExpire called'));
+  } = useTimer(time, () => console.warn('onExpire called'));
 
   return (
-    <ShowTimer isRunning={isRunning} hours={hours} minutes={minutes}
-      seconds={seconds} start={start} pause={pause} resume={resume}
-      restart={restart} />
+    <div>
+      <div>
+        <ShowTimer isRunning={isRunning} hours={hours} minutes={minutes}
+          seconds={seconds} start={start} pause={pause} resume={resume}
+          restart={restart} />
+      </div>
+      <div className='bottons'>
+        <SetTimerBottons />
+      </div>
+    </div>
   );
 }
 
 export default function App() {
-  const time = new Date();
-  time.setSeconds(time.getSeconds() + 600); // 10 minutes timer
-  return (
+    return (
     <div>
-      <MyTimer expiry={time} />
+      <MyTimer/>
     </div>
   );
 }
